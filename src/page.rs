@@ -862,11 +862,8 @@ impl PdfPage {
         align_h: haru_types::ImageAlign,
         align_v: haru_types::ImageAlign,
     ) -> Result<&Self, HaruError> {
-        // get the raw size of the input image
-
         let img_width = image.get_width()? as f32;
         let img_height = image.get_height()? as f32;
-        println!("image size: {}x{}", img_width, img_height);
 
         let mut effective_x = rect.x;
         let mut effective_y = rect.y;
