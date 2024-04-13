@@ -902,7 +902,6 @@ impl PdfPage {
                 let ratio = width_ratio.max(height_ratio);
                 effective_width = img_width * ratio;
                 effective_height = img_height * ratio;
-                println!("effective size: {}x{}", effective_width, effective_height);
             }
         }
 
