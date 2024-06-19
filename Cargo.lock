@@ -4,9 +4,9 @@ version = 3
 
 [[package]]
 name = "cc"
-version = "1.0.96"
+version = "1.0.99"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "065a29261d53ba54260972629f9ca6bffa69bac13cd1fed61420f7fa68b9f8bd"
+checksum = "96c51067fd44124faa7f870b4b1c969379ad32b2ba805aa959430ceaa384f695"
 
 [[package]]
 name = "cmake"
@@ -19,7 +19,7 @@ dependencies = [
 
 [[package]]
 name = "libharu_ng"
-version = "1.0.8"
+version = "1.0.9"
 dependencies = [
  "cmake",
 ]
