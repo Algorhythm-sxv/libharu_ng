@@ -32,7 +32,7 @@
 use crate::{
     font::PdfFont,
     haru_bindings as hb,
-    haru_types::{CompressionMode, HaruError, PageLayout, PageMode},
+    haru_types::{ColorSpace, CompressionMode, HaruError, PageLayout, PageMode},
     image::PdfImage,
     page::PdfPage,
 };
@@ -397,6 +397,77 @@ impl PdfDocument {
         }
     }
 
+    /// load_raw_image_from_file() loads raw image data from an external file with the given width, height and color space
+    ///
+    /// API: HPDF_LoadRawImageFromFile
+    ///
+    pub fn load_raw_image_from_file(
+        &self,
+        filename: &str,
+        width: u32,
+        height: u32,
+        color_space: ColorSpace,
+    ) -> Result<PdfImage, HaruError> {
+        let filename = std::ffi::CString::new(filename).unwrap();
+        let image = unsafe {
+            hb::HPDF_LoadRawImageFromFile(
+                self.doc,
+                filename.as_ptr(),
+                width,
+                height,
+                color_space as u32,
+            )
+        };
+        match image.is_null() {
+            true => Err(self.get_error()),
+            false => Ok(PdfImage { image_ref: image }),
+        }
+    }
+
+    /// load_raw_image_from_mem loads an image from raw bytes in-memory with the given width, height, and color space.
+    /// Allowed color spaces are [`DeviceGray`](ColorSpace::DeviceGray), [`DeviceRgb`](crate::haru_types::ColorSpace::DeviceRgb),
+    /// and [`DeviceCmyk`](ColorSpace::DeviceCmyk).
+    ///
+    /// API: HPDF_LoadRawImageFromMem
+    ///
+    pub fn load_raw_image_from_mem(
+        &self,
+        img_bytes: &[u8],
+        width: u32,
+        height: u32,
+        color_space: ColorSpace,
+        bits_per_channel: u32,
+    ) -> Result<PdfImage, HaruError> {
+        let image = unsafe {
+            hb::HPDF_LoadRawImageFromMem(
+                self.doc,
+                img_bytes.as_ptr(),
+                width,
+                height,
+                color_space as u32,
+                bits_per_channel,
+            )
+        };
+        match image.is_null() {
+            true => Err(self.get_error()),
+            false => Ok(PdfImage { image_ref: image }),
+        }
+    }
+
+    /// load_png_image_from_mem loads an image from a byte slice containing a PNG file
+    ///
+    /// API: HPDF_LoadPngImageFromMem
+    ///
+    pub fn load_png_image_from_mem(&self, png_bytes: &[u8]) -> Result<PdfImage, HaruError> {
+        let image = unsafe {
+            hb::HPDF_LoadPngImageFromMem(self.doc, png_bytes.as_ptr(), png_bytes.len() as u32)
+        };
+        match image.is_null() {
+            true => Err(self.get_error()),
+            false => Ok(PdfImage { image_ref: image }),
+        }
+    }
+
     /// load_png_image_from_file() loads an external PNG image file.
     ///
     /// API: HPDF_LoadPngImageFromFile
@@ -427,6 +498,19 @@ impl PdfDocument {
         }
     }
 
+    /// load_jpeg_image_from_mem loads an image from a byte slice containing a JPEG file
+    ///
+    /// API: HPDF_LoadJpegImageFromMem
+    ///
+    pub fn load_jpeg_image_from_mem(&self, jpeg_bytes: &[u8]) -> Result<PdfImage, HaruError> {
+        let image = unsafe {
+            hb::HPDF_LoadJpegImageFromMem(self.doc, jpeg_bytes.as_ptr(), jpeg_bytes.len() as u32)
+        };
+        match image.is_null() {
+            true => Err(self.get_error()),
+            false => Ok(PdfImage { image_ref: image }),
+        }
+    }
     /// HPDF_LoadJpegImageFromFile() loads an external JPEG image file.
     ///
     /// API: HPDF_LoadJpegImageFromFile
