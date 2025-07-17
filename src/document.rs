@@ -476,7 +476,7 @@ impl PdfDocument {
         let filename = std::ffi::CString::new(filename).unwrap();
         let image = unsafe { hb::HPDF_LoadPngImageFromFile(self.doc, filename.as_ptr()) };
         match image.is_null() {
-            true => Err(HaruError::from(0)),
+            true => Err(self.get_error()),
             false => Ok(PdfImage { image_ref: image }),
         }
     }
@@ -493,7 +493,7 @@ impl PdfDocument {
         let filename = std::ffi::CString::new(filename).unwrap();
         let image = unsafe { hb::HPDF_LoadPngImageFromFile2(self.doc, filename.as_ptr()) };
         match image.is_null() {
-            true => Err(HaruError::from(0)),
+            true => Err(self.get_error()),
             false => Ok(PdfImage { image_ref: image }),
         }
     }
@@ -519,7 +519,7 @@ impl PdfDocument {
         let filename = std::ffi::CString::new(filename).unwrap();
         let image = unsafe { hb::HPDF_LoadJpegImageFromFile(self.doc, filename.as_ptr()) };
         match image.is_null() {
-            true => Err(HaruError::from(0)),
+            true => Err(self.get_error()),
             false => Ok(PdfImage { image_ref: image }),
         }
     }
